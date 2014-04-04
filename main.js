@@ -2,72 +2,102 @@
 (function () {
   "use strict";
 
-  var transitions = {};
+  var machine;
+  var spec = Multiplication;
 
-  // Initial State
-  transitions['start'] = {
-    '0': new Transition('q0', '.', Tape.Right),
-    '1': new Transition('clear-right', '.', Tape.Right)
+
+  window.onload = function () {
+    clearMachine();
+
+    document.getElementById('stepButton').addEventListener('click', function () {
+      step();
+    });
+
+    document.getElementById('stepAllButton').addEventListener('click', function () {
+      stepAll();
+    });
+
+    document.getElementById('clearButton').addEventListener('click', clearMachine);
   };
 
-  // Clears the tape from the current position towards the right.
-  transitions['clear-right'] = {
-    '0': new Transition('clear-right', '.', Tape.Right),
-    '.': new Transition('end', '.', Tape.Right)
-  };
+  function getMachine() {
+    if (!machine) {
+      machine = new Machine(newTape(spec), spec.transitions, 'start', ['end']);
+    }
+    return machine;
+  }
 
-  // Clears the tape from the current position towards the left.
-  transitions['clear-left'] = {
-    '0': new Transition('clear-left', '.', Tape.Left),
-    '1': new Transition('clear-left', '.', Tape.Left),
-    '.': new Transition('end', '.', Tape.Left)
-  };
+  function newTape (spec) {
+    var input = spec.encodeInput(getInput('x'), getInput('y'));
+    return new Tape(input);
+  }
 
-  transitions['qc'] = {
-    '0': new Transition('qc', '0', Tape.Right),
-    '.': new Transition('qcf', '.', Tape.Left),
-    'b': new Transition('qc', '0', Tape.Right)
-  };
+  function clearMachine() {
+    machine = null;
+    drawTape();
+  }
 
-  transitions['q0'] = {
-    '0': new Transition('q1', '.', Tape.Right),
-    '1': new Transition('qc', '.', Tape.Right)
-  };
+  function step() {
+    var didTransition = getMachine().step();
+    drawTape();
+    if (!didTransition) {
+      displayResult();
+    }
+    return didTransition;
+  }
 
-  transitions['q1'] = {
-    '0': new Transition('q1', '0', Tape.Right),
-    '1': new Transition('q2', '1', Tape.Right)
-  };
+  function stepAll() {
+    clearMachine();
 
-  transitions['q2'] = {
-    '0': new Transition('q3', 'a', Tape.Right),
-    '.': new Transition('clear-left', '.', Tape.Left)
-  };
+    var stepAllStep = function () {
+      if (step()) {
+        setTimeout(stepAllStep, 100);
+      }
+    };
+    setTimeout(stepAllStep, 100);
+  }
 
-  transitions['q3'] = {
-    '0': new Transition('q3', '0', Tape.Right),
-    'b': new Transition('q3', 'b', Tape.Right),
-    '.': new Transition('q4', 'b', Tape.Left)
-  };
+  function displayResult() {
+    var resultElement = document.getElementById('result');
+    resultElement.textContent = machine ? machine.tape.contents().length : '?';
+  }
 
-  transitions['q4'] = {
-    '0': new Transition('q4', '0', Tape.Left),
-    'b': new Transition('q4', 'b', Tape.Left),
-    'a': new Transition('q5', '0', Tape.Right)
-  };
+  function drawTape() {
+    clearTape();
+    if (machine) {
+      var tapeElement = document.getElementById('tape');
+      var cells = tapeElement.children;
+      var values = valuesToRender(machine.tape);
+      for (var i = 0; i < cells.length; i++) {
+        cells[i].textContent = values[i] ? values[i] : '.';
+      }
+    }
+  }
 
-  transitions['q5'] = {
-    '0': new Transition('q3', 'a', Tape.Right),
-    'b': new Transition('q6', 'b', Tape.Left),
-  };
+  function clearTape() {
+    var tapeElement = document.getElementById('tape');
+    var cells = tapeElement.children;
+    for (var i = 0; i < cells.length; i++) {
+      cells[i].textContent = '.';
+    }
+  }
 
-  transitions['q6'] = {
-    '0': new Transition('q6', '0', Tape.Left),
-    '1': new Transition('q6', '1', Tape.Left),
-    '.': new Transition('q0', '.', Tape.Right),
-  };
+  function valuesToRender(tape) {
+    var values = tape.cells.slice();
+    if (tape.position > 15) {
+      values = values.slice(tape.position - 16, values.length - 1);
+    }
+    for (var i = 0; i < 15 - tape.position; i++) {
+      values.unshift('.');
+    }
+    return values;
+  }
 
-  runTests();
+  function getInput (id) {
+    return document.getElementById(id).value;
+  }
+
+  //runTests();
 
   function runTests () {
     var tests = {
@@ -83,7 +113,7 @@
         continue;
       }
       var tape = new Tape(input);
-      var m = new Machine(tape, transitions, 'start', ['end']);
+      var m = new Machine(tape, Multiplication.transitions, 'start', ['end']);
       m.stepAll();
 
       var message = ['input: ' + input, 'expected: ' + tests[input], 'actual: ' + tape.contents()].join(', ');

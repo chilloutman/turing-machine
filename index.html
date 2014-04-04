@@ -3,15 +3,66 @@
 <html>
   <head>
     <title>Turing Machine</title>
+    <style>
+      body > * {
+        margin: auto;
+        width: 806px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      section {
+        text-align: center;
+        margin: 25px;
+      }
+
+      #tape {
+        border: 1px #000 solid;
+        height: 25px;
+      }
+
+      #tape .cell {
+        margin: 0;
+        padding: 0;
+        width: 25px;
+        height: 20px;
+        padding-top: 5px;
+        display: inline-block;
+        border-right: 1px #000 solid;
+        text-align: center;
+      }
+
+      #tape .last-cell {
+        border-right: 0;
+      }
+
+      #tape .head {
+        background-color: #c5e3ff;
+      }
+
+    </style>
   </head>
 
   <body>
+    <div>
+      <section class="input">
+        <input id="x" name="x" type="text" value="5"> * <input id="y" name="y" type="text" value="5"> = <span id="result">?</span>
+      </section>
+    </div>
+
+    <div>
+      <section class="controls">
+        <button id="stepButton">Step</button> <button id ="stepAllButton">Go</button> <br> <button id ="clearButton">Clear</button>
+      </section>
+    </div>
+
+    <div id="tape">
+      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell head"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell last-cell"></div>
+    </div>
+
+    <script src="tape.js"></script>
+    <script src="machine.js"></script>
+    <script src="multiplication.js"></script>
+    <script src="main.js"></script>
+
   </body>
-
-  <script src="tape.js"></script>
-  <script src="machine.js"></script>
-  <script src="multiplication.js"></script>
-  <script src="main.js"></script>
-
-
 </html>

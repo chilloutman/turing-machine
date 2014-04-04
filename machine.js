@@ -40,14 +40,14 @@ Machine = (function () {
     this.state = transition.nextState;
     this.log();
     return true;
+  };
 
-    function isAccept() {
-      return this.acceptingStates.indexOf(this.state) < 0;
-    }
+  Machine.prototype.accept = function () {
+    return this.acceptingStates.indexOf(this.state) < 0;
   };
 
   function nextTransition(transitions, state, symbol) {
-    if (transitions[state] === undefined || !transitions[state][symbol] === undefined) {
+    if (transitions[state] === undefined || transitions[state][symbol] === undefined) {
       return null;
     }
     return transitions[state][symbol];
@@ -56,8 +56,7 @@ Machine = (function () {
   Machine.prototype.stepAll = function () {
     console.log('start');
     this.log();
-    while (this.step()) {
-    }
+    while (this.step()) {}
   };
 
   Machine.prototype.toString = function () {
