@@ -26,13 +26,13 @@ Machine = (function () {
     this.transitions = transitions;
     this.state = initialState;
     this.acceptingStates = acceptingStates;
+    this.verbose = true;
   };
 
   Machine.prototype.step = function () {
     var symbol = this.tape.read();
     var transition = nextTransition(this.transitions, this.state, symbol);
     if (!transition) {
-      console.log('end -> ' + this);
       return false;
     }
     this.tape.write(transition.symbolToWrite);
@@ -54,7 +54,6 @@ Machine = (function () {
   }
 
   Machine.prototype.stepAll = function () {
-    console.log('start');
     this.log();
     while (this.step()) {}
   };
@@ -64,7 +63,9 @@ Machine = (function () {
   };
 
   Machine.prototype.log = function () {
-    console.log(this.toString());
+    if (this.verbose) {
+      console.log(this.toString());
+    }
   };
 
   return Machine;

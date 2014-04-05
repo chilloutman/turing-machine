@@ -4,6 +4,7 @@
 
   var machine;
   var spec = Multiplication;
+  var timeout;
 
 
   window.onload = function () {
@@ -15,6 +16,10 @@
 
     document.getElementById('stepAllButton').addEventListener('click', function () {
       stepAll();
+    });
+
+    document.getElementById('stepAllFastButton').addEventListener('click', function () {
+      stepAll(true);
     });
 
     document.getElementById('clearButton').addEventListener('click', clearMachine);
@@ -33,31 +38,49 @@
   }
 
   function clearMachine() {
+    clearTimeout(timeout);
     machine = null;
-    drawTape();
+    update(true);
   }
 
   function step() {
-    var didTransition = getMachine().step();
-    drawTape();
-    if (!didTransition) {
-      displayResult();
-    }
+    var didTransition = getMachine().step(true);
+    update(!didTransition);
     return didTransition;
   }
 
-  function stepAll() {
+  function stepAll(fast) {
     clearMachine();
 
-    var stepAllStep = function () {
-      if (step()) {
-        setTimeout(stepAllStep, 100);
-      }
-    };
-    setTimeout(stepAllStep, 100);
+    if (fast) {
+      // Go as fast as possible and only show the end result.
+      getMachine().verbose = false;
+      getMachine().stepAll(false);
+      update(true);
+    } else {
+      // Go slower and show every step.
+      var stepAllStep = function () {
+        if (step(true)) {
+          timeout = setTimeout(stepAllStep, 50);
+        }
+      };
+      timeout = setTimeout(stepAllStep, 50);
+    }
   }
 
-  function displayResult() {
+  function update(alsoUpdateResult) {
+    drawTape();
+    updateState();
+    if (alsoUpdateResult) {
+      updateResult();
+    }
+  }
+
+  function updateState() {
+    document.getElementById('state').textContent = machine? machine.state : '';
+  }
+
+  function updateResult() {
     var resultElement = document.getElementById('result');
     resultElement.textContent = machine ? machine.tape.contents().length : '?';
   }
@@ -109,18 +132,17 @@
     };
 
     for (var input in tests) {
-      if (!tests.hasOwnProperty(input)) {
-        continue;
-      }
-      var tape = new Tape(input);
-      var m = new Machine(tape, Multiplication.transitions, 'start', ['end']);
-      m.stepAll();
+      if (tests.hasOwnProperty(input)) {
+        var tape = new Tape(input);
+        var m = new Machine(tape, Multiplication.transitions, 'start', ['end']);
+        m.stepAll();
 
-      var message = ['input: ' + input, 'expected: ' + tests[input], 'actual: ' + tape.contents()].join(', ');
-      if (tests[input] === tape.contents()) {
-        console.log(message);
-      } else {
-        console.error(message)
+        var message = ['input: ' + input, 'expected: ' + tests[input], 'actual: ' + tape.contents()].join(', ');
+        if (tests[input] === tape.contents()) {
+          console.log(message);
+        } else {
+          console.error(message)
+        }
       }
     }
 

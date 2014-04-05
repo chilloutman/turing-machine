@@ -8,11 +8,29 @@
         margin: auto;
         width: 806px;
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 16px;
+      }
+
+      button {
+        width: 80px;
+        font-size: 16px;
+        margin: 5px;
+      }
+
+      input[type="text"] {
+        text-align: center;
       }
 
       section {
         text-align: center;
-        margin: 25px;
+        margin: 15px;
+        padding: 10px;
+      }
+
+      section.input {
+        background-color: #c5e3ff;
+        margin: 25px 200px;
+        border-radius: 5px;
       }
 
       #tape {
@@ -24,8 +42,8 @@
         margin: 0;
         padding: 0;
         width: 25px;
-        height: 20px;
-        padding-top: 5px;
+        height: 23px;
+        padding-top: 2px;
         display: inline-block;
         border-right: 1px #000 solid;
         text-align: center;
@@ -45,13 +63,16 @@
   <body>
     <div>
       <section class="input">
-        <input id="x" name="x" type="text" value="5"> * <input id="y" name="y" type="text" value="5"> = <span id="result">?</span>
+        <input id="x" name="x" type="text" value="3"> * <input id="y" name="y" type="text" value="3"> = <span id="result">?</span>
       </section>
     </div>
 
     <div>
       <section class="controls">
-        <button id="stepButton">Step</button> <button id ="stepAllButton">Go</button> <br> <button id ="clearButton">Clear</button>
+        <button id="stepButton">Step</button><button id ="stepAllButton">Go</button><button id ="stepAllFastButton">Go Fast</button><br><button id ="clearButton">Clear</button>
+      </section>
+      <section class="info">
+        <span id="state"></span>
       </section>
     </div>
 

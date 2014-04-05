@@ -29,7 +29,7 @@ Tape = (function () {
 
   Tape.prototype.read = function () {
     var symbol = this.cells[this.position] === undefined ? '.' : this.cells[this.position];
-    console.debug('read: ' + symbol);
+    console.debug('tape read: ' + symbol);
     return symbol;
   };
 
@@ -37,7 +37,7 @@ Tape = (function () {
     if (!symbol || symbol.length !== 1) {
       throw new Error('Invalid symbol cannot be written: "' + symbol + '"');
     }
-    console.debug('write: ' + symbol);
+    console.debug('tape write: ' + symbol);
     this.cells[this.position] = symbol;
   };
 
