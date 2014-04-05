@@ -6,7 +6,6 @@
   var spec = Multiplication;
   var timeout;
 
-
   window.onload = function () {
     clearMachine();
 
@@ -32,7 +31,7 @@
     return machine;
   }
 
-  function newTape (spec) {
+  function newTape(spec) {
     var input = spec.encodeInput(getInput('x'), getInput('y'));
     return new Tape(input);
   }
@@ -116,13 +115,13 @@
     return values;
   }
 
-  function getInput (id) {
+  function getInput(id) {
     return document.getElementById(id).value;
   }
 
   //runTests();
 
-  function runTests () {
+  function runTests() {
     var tests = {
       '1': '',
       '01000': '000',
@@ -141,7 +140,7 @@
         if (tests[input] === tape.contents()) {
           console.log(message);
         } else {
-          console.error(message)
+          console.error(message);
         }
       }
     }

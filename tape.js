@@ -43,11 +43,11 @@ Tape = (function () {
 
   Tape.prototype.toString = function () {
     return getPositionString(this.position) + '\n' + this.cells.join('');
-  }
+  };
 
   Tape.prototype.contents = function () {
     return this.cells.join('').replace(/\./g, '');
-  }
+  };
 
   function getPositionString (position) {
     return new Array(position).join(' ') + ' v';
