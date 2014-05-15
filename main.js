@@ -4,6 +4,7 @@
 
   var machine;
   var spec = Multiplication;
+  var tapeColors;
   var timeout;
 
   window.onload = function () {
@@ -27,6 +28,7 @@
   function getMachine() {
     if (!machine) {
       machine = new Machine(newTape(spec), spec.transitions, 'start', ['end']);
+      determineTapeColors(spec.alphabet);
     }
     return machine;
   }
@@ -34,6 +36,16 @@
   function newTape(spec) {
     var input = spec.encodeInput(getInput('x'), getInput('y'));
     return new Tape(input);
+  }
+
+  function determineTapeColors(alphabet) {
+    tapeColors = {};
+    var hueDistance = 256 / (alphabet.length);
+    alphabet.forEach(function (character, index) {
+      var hue = hueDistance * index;
+      var color = 'hsla(' + hue + ', 50%, 70%, 1)';
+      tapeColors[character] = color;
+    });
   }
 
   function clearMachine() {
@@ -68,7 +80,7 @@
   }
 
   function update(alsoUpdateResult) {
-    drawTape();
+    updateTape();
     updateState();
     if (alsoUpdateResult) {
       updateResult();
@@ -76,7 +88,11 @@
   }
 
   function updateState() {
-    document.getElementById('state').textContent = machine? machine.state : '';
+    if (!machine) {
+      document.getElementById('state').textContent = '';
+    } else {
+      document.getElementById('state').textContent = 'State: ' + machine.state + ', Steps: ' + machine.steps;
+    }
   }
 
   function updateResult() {
@@ -84,14 +100,20 @@
     resultElement.textContent = machine ? machine.tape.contents().length : '?';
   }
 
-  function drawTape() {
+  function updateTape() {
     clearTape();
     if (machine) {
-      var tapeElement = document.getElementById('tape');
-      var cells = tapeElement.children;
+      var cells = document.getElementById('tape').children;
       var values = valuesToRender(machine.tape);
+
+      updateTapeValues(cells, values);
+    }
+
+    function updateTapeValues(cells, values) {
       for (var i = 0; i < cells.length; i++) {
-        cells[i].textContent = values[i] ? values[i] : '.';
+        var character = values[i] ? values[i] : '.';
+        cells[i].textContent = character;
+        cells[i].style['background-color'] = tapeColors[character];
       }
     }
   }
@@ -101,6 +123,7 @@
     var cells = tapeElement.children;
     for (var i = 0; i < cells.length; i++) {
       cells[i].textContent = '.';
+      cells[i].style['background-color'] = '';
     }
   }
 
