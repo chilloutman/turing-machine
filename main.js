@@ -76,7 +76,11 @@
   }
 
   function updateState() {
-    document.getElementById('state').textContent = machine? machine.state : '';
+    if (!machine) {
+      document.getElementById('state').textContent = '';
+    } else {
+      document.getElementById('state').textContent = 'State: ' + machine.state + ', Steps: ' + machine.steps;
+    }
   }
 
   function updateResult() {

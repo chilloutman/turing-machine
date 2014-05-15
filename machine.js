@@ -26,6 +26,7 @@ Machine = (function () {
     this.transitions = transitions;
     this.state = initialState;
     this.acceptingStates = acceptingStates;
+    this.steps = 0;
     this.verbose = true;
   };
 
@@ -38,6 +39,7 @@ Machine = (function () {
     this.tape.write(transition.symbolToWrite);
     this.tape.move(transition.moveDirection);
     this.state = transition.nextState;
+    this.steps++;
     this.log();
     return true;
   };
