@@ -27,6 +27,8 @@ Multiplication = (function () {
     return unaryValue;
   }
 
+  Multiplication.alphabet = [ '.', '0', '1', 'a', 'b' ];
+
   Multiplication.transitions = {};
 
   // Initial State
